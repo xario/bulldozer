@@ -47,6 +47,9 @@ type Context interface {
 	// HeadSHA returns the SHA hash of the latest commit in the pull request.
 	HeadSHA() string
 
+	// HeadSHA returns the name of the user that created the pull request.
+	UserLogin() string
+
 	// Branches returns the base (also known as target) and head branch names
 	// of this pull request. Branches in this repository have no prefix, while
 	// branches in forks are prefixed with the owner of the fork and a colon.
@@ -89,6 +92,8 @@ type MergeState struct {
 }
 
 type Commit struct {
-	SHA     string
-	Message string
+	SHA         string
+	Message     string
+	AuthorEmail string
+	AuthorLogin string
 }

@@ -9,7 +9,7 @@ COPY config/bulldozer.example.yml /secrets/bulldozer.yml
 COPY ca-certificates.crt /etc/ssl/certs/
 
 # add application files
-COPY bulldozer /
+COPY bulldozer /bulldozer
 
-ENTRYPOINT ["build/linux-amd64/bulldozer"]
+ENTRYPOINT ["/bulldozer"]
 CMD ["server", "--config", "/secrets/bulldozer.yml"]

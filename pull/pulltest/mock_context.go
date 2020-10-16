@@ -22,9 +22,10 @@ import (
 
 // MockPullContext is a dummy Context implementation.
 type MockPullContext struct {
-	OwnerValue  string
-	RepoValue   string
-	NumberValue int
+	UserLoginValue string
+	OwnerValue     string
+	RepoValue      string
+	NumberValue    int
 
 	TitleValue   string
 	BodyValue    string
@@ -57,6 +58,10 @@ type MockPullContext struct {
 
 	IsTargetedValue    bool
 	IsTargetedErrValue error
+}
+
+func (c *MockPullContext) UserLogin() string {
+	return c.UserLoginValue
 }
 
 func (c *MockPullContext) Owner() string {

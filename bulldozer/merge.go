@@ -320,6 +320,25 @@ func calculateCommitMessage(ctx context.Context, pullCtx pull.Context, option Sq
 		emptyMessage   = " "
 	)
 
+	commits, err := pullCtx.Commits(ctx)
+	if err != nil {
+		return "", err
+	}
+
+	prAuthorLogin := pullCtx.UserLogin()
+	coAuthorsMap := map[string]string{}
+
+	for _, commit := range commits {
+		if commit.AuthorLogin != prAuthorLogin {
+			coAuthorsMap[commit.AuthorEmail] = fmt.Sprintf("Co-authored-by: %s <%s>", commit.AuthorLogin, commit.AuthorEmail)
+		}
+	}
+
+	coAuthors := []string{}
+	for _, coAuthor := range coAuthorsMap {
+		coAuthors = append(coAuthors, coAuthor)
+	}
+
 	commitMessage := defaultMessage
 	switch option.Body {
 	case PullRequestBody:
@@ -332,7 +351,7 @@ func calculateCommitMessage(ctx context.Context, pullCtx pull.Context, option Sq
 			}
 
 			if m := matcher.FindStringSubmatch(pullCtx.Body()); len(m) == 4 && m[2] != "" {
-				commitMessage = m[2]
+				commitMessage = fmt.Sprintf("%s\n\n%s", m[2], strings.Join(coAuthors, "\n"))
 			} else {
 				commitMessage = emptyMessage
 			}

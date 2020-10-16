@@ -79,6 +79,10 @@ func (ghc *GithubContext) HeadSHA() string {
 	return ghc.pr.GetHead().GetSHA()
 }
 
+func (ghc *GithubContext) UserLogin() string {
+	return ghc.pr.GetUser().GetLogin()
+}
+
 func (ghc *GithubContext) MergeState(ctx context.Context) (*MergeState, error) {
 	pr, _, err := ghc.client.PullRequests.Get(ctx, ghc.owner, ghc.repo, ghc.number)
 	if err != nil {
@@ -155,8 +159,10 @@ func (ghc *GithubContext) Commits(ctx context.Context) ([]*Commit, error) {
 		ghc.commits = make([]*Commit, len(allCommits))
 		for i, c := range allCommits {
 			ghc.commits[i] = &Commit{
-				SHA:     c.GetCommit().GetSHA(),
-				Message: c.GetCommit().GetMessage(),
+				SHA:         c.GetCommit().GetSHA(),
+				Message:     c.GetCommit().GetMessage(),
+				AuthorEmail: c.GetCommit().GetAuthor().GetEmail(),
+				AuthorLogin: c.GetAuthor().GetLogin(),
 			}
 		}
 	}
